@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--charcoal:#0e0d0c;
+--graphite:#1a1917;
+--mid:#2c2a28;
+--surface:#1f1e1c;
+--off-white:#f0ede8;
+--muted:#9a9690;
+--wine:#6b2737;
+--wine-light:#8b3545;
+--silver:#c8c2ba;
+--serif:'Cormorant Garamond',serif;
+--sans:'Montserrat',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--charcoal);color:var(--off-white);font-family:var(--sans);overflow-x:hidden}
+
+/* NOISE TEXTURE */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.35;mix-blend-mode:overlay;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:28px 60px;
+  transition:background .6s,padding .4s;
+}
+nav.scrolled{background:rgba(14,13,12,.92);backdrop-filter:blur(12px);padding:18px 60px;border-bottom:1px solid rgba(200,194,186,.08)}
+.nav-logo{font-family:var(--serif);font-size:22px;font-weight:400;letter-spacing:6px;color:var(--off-white);cursor:pointer;text-decoration:none}
+.nav-links{display:flex;gap:40px;list-style:none}
+.nav-links a{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:color .3s;text-decoration:none;background:none;border:none;font-family:var(--sans)}
+.nav-links a:hover{color:var(--off-white)}
+.nav-links a.active{color:var(--off-white)}
+.nav-right{display:flex;align-items:center;gap:24px}
+.nav-cta{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--off-white);border:1px solid rgba(200,194,186,.3);padding:10px 20px;cursor:pointer;transition:all .3s;background:none;font-family:var(--sans)}
+.nav-cta:hover{background:rgba(200,194,186,.08);border-color:rgba(200,194,186,.6)}
+
+/* PAGES */
+.page{min-height:100vh;display:none}
+.page.active{display:block}
+
+/* ═══════════════ HOME PAGE ═══════════════ */
+.hero{
+  height:100vh;position:relative;display:flex;align-items:flex-end;
+  background:linear-gradient(160deg,#0e0d0c 0%,#1a1512 40%,#0f0c0a 100%);
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 80% at 70% 50%, rgba(107,39,55,.18) 0%, transparent 70%),
+             radial-gradient(ellipse 40% 60% at 30% 30%, rgba(26,21,18,.8) 0%, transparent 60%);
+}
+.hero-bottle{
+  position:absolute;right:8%;top:50%;transform:translateY(-50%);
+  width:160px;opacity:.45;
+  animation:bottleFadeIn 2s ease forwards;
+}
+@keyframes bottleFadeIn{from{opacity:0;transform:translateY(-45%)}to{opacity:.45;transform:translateY(-50%)}}
+
+.hero-bottle svg{width:100%;filter:drop-shadow(0 40px 80px rgba(0,0,0,.8))}
+.hero-content{
+  position:relative;z-index:2;padding:0 60px 120px;
+  animation:heroReveal 1.8s ease forwards;opacity:0;
+}
+@keyframes heroReveal{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:32px}
+.hero-title{font-family:var(--serif);font-size:clamp(64px,8vw,110px);font-weight:300;line-height:1;color:var(--off-white);margin-bottom:32px}
+.hero-title em{font-style:italic;color:var(--silver)}
+.hero-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:56px;max-width:320px;line-height:2}
+.btn-primary{
+  display:inline-block;font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--off-white);border:1px solid rgba(200,194,186,.4);padding:16px 40px;
+  cursor:pointer;transition:all .4s;background:none;font-family:var(--sans);text-decoration:none;
+}
+.btn-primary:hover{background:rgba(200,194,186,.06);border-color:var(--off-white)}
+.scroll-indicator{
+  position:absolute;bottom:40px;right:60px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--muted),transparent)}
+
+/* HOME SECTIONS */
+.section{padding:140px 60px}
+.section-dark{background:var(--graphite)}
+.section-light{background:#f0ede8;color:var(--charcoal)}
+.section-mid{background:var(--surface)}
+
+.section-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:48px}
+.section-eyebrow.dark{color:#6b6560}
+.section-title{font-family:var(--serif);font-size:clamp(40px,5vw,72px);font-weight:300;line-height:1.1;margin-bottom:32px}
+.section-title.light-text{color:var(--charcoal)}
+.section-body{font-size:11px;letter-spacing:1px;line-height:2.2;color:var(--muted);max-width:480px}
+.section-body.dark{color:#5a5650}
+
+/* CURATED GRID */
+.wine-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(200,194,186,.06);margin-top:80px}
+.wine-card{
+  background:var(--charcoal);padding:56px 40px;cursor:pointer;
+  transition:background .5s;position:relative;overflow:hidden;
+}
+.wine-card::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(200,194,186,.15),transparent);
+  transform:scaleX(0);transition:transform .6s;
+}
+.wine-card:hover::before{transform:scaleX(1)}
+.wine-card:hover{background:var(--graphite)}
+.wine-card-img{width:60px;height:140px;margin:0 auto 48px;display:flex;align-items:center;justify-content:center}
+.wine-card-img svg{width:100%;height:100%;opacity:.7;transition:opacity .4s}
+.wine-card:hover .wine-card-img svg{opacity:1}
+.wine-card-region{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center}
+.wine-card-name{font-family:var(--serif);font-size:24px;font-weight:400;text-align:center;margin-bottom:8px;color:var(--off-white)}
+.wine-card-vintage{font-size:9px;letter-spacing:3px;color:var(--muted);text-align:center;margin-bottom:24px}
+.wine-card-price{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--silver);text-align:center}
+.wine-card-arrow{
+  text-align:center;margin-top:32px;font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:transparent;transition:color .4s;
+}
+.wine-card:hover .wine-card-arrow{color:var(--muted)}
+
+/* EDITORIAL SECTION */
+.editorial-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:40px}
+.editorial-visual{
+  aspect-ratio:3/4;background:linear-gradient(160deg,var(--graphite) 0%,var(--mid) 100%);
+  position:relative;overflow:hidden;
+}
+.editorial-visual::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,rgba(107,39,55,.25) 0%,transparent 60%);
+}
+.editorial-visual-inner{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+}
+.editorial-text{padding:40px 0}
+.editorial-quote{
+  font-family:var(--serif);font-size:clamp(28px,3vw,42px);font-weight:300;
+  font-style:italic;line-height:1.4;color:var(--off-white);margin-bottom:40px;
+}
+.editorial-attribution{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted)}
+
+/* MANIFESTO */
+.manifesto{text-align:center;padding:160px 60px}
+.manifesto-line{
+  font-family:var(--serif);font-size:clamp(32px,4vw,60px);font-weight:300;
+  line-height:1.2;color:var(--off-white);display:block;
+  opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s;
+}
+.manifesto-line.visible{opacity:1;transform:translateY(0)}
+.manifesto-line.italic{font-style:italic;color:var(--silver)}
+.manifesto-divider{width:40px;height:1px;background:rgba(200,194,186,.2);margin:48px auto}
+
+/* ═══════════════ COLLECTION PAGE ═══════════════ */
+.page-header{padding:180px 60px 80px;text-align:center}
+.page-header-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:24px}
+.page-header-title{font-family:var(--serif);font-size:clamp(48px,6vw,88px);font-weight:300;color:var(--off-white)}
+.page-header-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:24px}
+
+.collection-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:rgba(200,194,186,.04);margin:0 0 2px}
+.collection-item{
+  background:var(--charcoal);padding:80px 60px;cursor:pointer;
+  transition:background .5s;display:flex;flex-direction:column;
+  border:1px solid transparent;transition:all .5s;
+  position:relative;
+}
+.collection-item:hover{background:var(--graphite);border-color:rgba(200,194,186,.08)}
+.collection-item-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:60px}
+.collection-item-num{font-family:var(--serif);font-size:13px;color:rgba(200,194,186,.25);font-weight:300}
+.collection-item-badge{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--wine-light);border:1px solid rgba(139,53,69,.3);padding:6px 14px}
+.collection-item-bottle{flex:1;display:flex;align-items:center;justify-content:center;margin:0 0 60px}
+.collection-item-bottle svg{opacity:.65;transition:opacity .5s}
+.collection-item:hover .collection-item-bottle svg{opacity:.9}
+.collection-item-info{}
+.collection-item-region{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.collection-item-name{font-family:var(--serif);font-size:32px;font-weight:400;color:var(--off-white);margin-bottom:6px}
+.collection-item-vintage{font-family:var(--serif);font-size:18px;font-weight:300;color:var(--muted);margin-bottom:32px}
+.collection-item-footer{display:flex;justify-content:space-between;align-items:center;padding-top:24px;border-top:1px solid rgba(200,194,186,.08)}
+.collection-item-price{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--silver)}
+.collection-item-cta{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);transition:color .3s}
+.collection-item:hover .collection-item-cta{color:var(--off-white)}
+
+/* ═══════════════ WINE DETAIL PAGE ═══════════════ */
+.detail-hero{
+  height:100vh;display:grid;grid-template-columns:1fr 1fr;background:var(--charcoal);
+  position:relative;overflow:hidden;
+}
+.detail-hero-left{
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--graphite),var(--surface));
+  position:relative;
+}
+.detail-hero-left::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 60%,rgba(107,39,55,.2) 0%,transparent 60%);
+}
+.detail-bottle{position:relative;z-index:1;height:55vh;display:flex;align-items:center;justify-content:center}
+.detail-bottle svg{height:100%;filter:drop-shadow(0 60px 120px rgba(0,0,0,.7))}
+.detail-hero-right{
+  display:flex;flex-direction:column;justify-content:center;padding:80px 60px;
+  border-left:1px solid rgba(200,194,186,.06);
+}
+.detail-back{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-bottom:80px;transition:color .3s;display:inline-flex;align-items:center;gap:12px;background:none;border:none;font-family:var(--sans)}
+.detail-back:hover{color:var(--off-white)}
+.detail-back::before{content:'←';font-family:var(--serif);font-size:16px}
+.detail-region{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.detail-name{font-family:var(--serif);font-size:clamp(36px,4vw,60px);font-weight:300;color:var(--off-white);line-height:1.1;margin-bottom:16px}
+.detail-vintage{font-family:var(--serif);font-size:28px;font-weight:300;color:var(--muted);margin-bottom:48px}
+.detail-narrative{font-size:12px;letter-spacing:.5px;line-height:2.2;color:var(--muted);max-width:440px;margin-bottom:48px}
+.detail-price-row{display:flex;align-items:baseline;gap:24px;margin-bottom:48px}
+.detail-price{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--off-white)}
+.detail-avail{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--wine-light)}
+.detail-specs{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-top:1px solid rgba(200,194,186,.08);padding-top:40px;margin-top:8px}
+.detail-spec-label{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(154,150,144,.5);margin-bottom:6px}
+.detail-spec-value{font-family:var(--serif);font-size:15px;font-weight:300;color:var(--silver)}
+
+/* SPECS SECTION */
+.detail-lower{padding:100px 60px;background:var(--graphite)}
+.detail-lower-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:80px}
+.spec-block-title{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid rgba(200,194,186,.08)}
+.spec-row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(200,194,186,.04)}
+.spec-row-label{font-size:10px;letter-spacing:1px;color:rgba(154,150,144,.6)}
+.spec-row-val{font-family:var(--serif);font-size:13px;color:var(--silver);font-weight:300}
+
+/* ═══════════════ RARE CELLAR PAGE ═══════════════ */
+.cellar-hero{
+  height:60vh;background:linear-gradient(to bottom,#050403,var(--charcoal));
+  display:flex;align-items:flex-end;padding:80px 60px;
+  border-bottom:1px solid rgba(200,194,186,.04);
+}
+.cellar-hero-content{}
+.cellar-eyebrow{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:rgba(200,194,186,.2);margin-bottom:16px}
+.cellar-title{font-family:var(--serif);font-size:clamp(48px,6vw,80px);font-weight:300;color:var(--off-white);line-height:1}
+.cellar-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(154,150,144,.4);margin-top:24px}
+
+.cellar-grid{display:grid;grid-template-columns:repeat(3,1fr);background:#050403}
+.cellar-item{
+  padding:60px 40px;border:1px solid rgba(200,194,186,.03);
+  cursor:pointer;transition:all .6s;position:relative;
+}
+.cellar-item::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,rgba(107,39,55,.4),transparent);
+  transform:scaleX(0);transition:transform .8s;
+}
+.cellar-item:hover::before{transform:scaleX(1)}
+.cellar-item:hover{background:rgba(26,21,18,.6)}
+.cellar-item-id{font-size:8px;letter-spacing:4px;color:rgba(200,194,186,.1);margin-bottom:32px}
+.cellar-item-bottle{height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:40px}
+.cellar-item-bottle svg{opacity:.4;transition:opacity .5s}
+.cellar-item:hover .cellar-item-bottle svg{opacity:.6}
+.cellar-item-name{font-family:var(--serif);font-size:22px;font-weight:300;color:rgba(240,237,232,.7);margin-bottom:8px}
+.cellar-item-year{font-family:var(--serif);font-size:14px;color:rgba(154,150,144,.4);margin-bottom:24px}
+.cellar-item-price{font-family:var(--serif);font-size:20px;font-weight:300;color:rgba(200,194,186,.4);margin-bottom:8px}
+.cellar-item-units{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(107,39,55,.6)}
+
+/* ═══════════════ ABOUT PAGE ═══════════════ */
+.about-hero{
+  height:70vh;background:var(--charcoal);display:flex;align-items:center;
+  padding:0 60px;border-bottom:1px solid rgba(200,194,186,.04);
+}
+.about-hero-text{max-width:700px}
+.about-statement{
+  font-family:var(--serif);font-size:clamp(36px,4.5vw,64px);font-weight:300;
+  color:var(--off-white);line-height:1.25;
+}
+.about-statement em{font-style:italic;color:var(--silver)}
+
+.about-body{padding:100px 60px;display:grid;grid-template-columns:1fr 1fr;gap:120px}
+.about-column-title{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid rgba(200,194,186,.08)}
+.about-text{font-size:12px;letter-spacing:.5px;line-height:2.4;color:var(--muted)}
+.about-values{margin-top:80px;padding:80px 60px;background:var(--graphite)}
+.about-values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(200,194,186,.04);margin-top:48px}
+.about-value{background:var(--graphite);padding:48px 32px;text-align:center}
+.about-value-word{font-family:var(--serif);font-size:28px;font-weight:300;font-style:italic;color:var(--silver);margin-bottom:16px}
+.about-value-desc{font-size:9px;letter-spacing:2px;color:rgba(154,150,144,.5);line-height:1.8}
+
+/* ═══════════════ CONSULTATION PAGE ═══════════════ */
+.consult-hero{
+  height:60vh;display:flex;align-items:center;padding:0 60px;
+  background:linear-gradient(160deg,var(--charcoal),var(--graphite));
+  border-bottom:1px solid rgba(200,194,186,.04);
+}
+.consult-form-section{padding:100px 60px;max-width:640px;margin:0 auto}
+.consult-intro{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:80px;line-height:2.2}
+.form-group{margin-bottom:40px}
+.form-label{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:12px}
+.form-input{
+  width:100%;background:transparent;border:none;border-bottom:1px solid rgba(200,194,186,.15);
+  padding:12px 0;font-size:14px;font-family:var(--serif);color:var(--off-white);
+  outline:none;transition:border-color .3s;
+}
+.form-input:focus{border-bottom-color:rgba(200,194,186,.4)}
+.form-input::placeholder{color:rgba(154,150,144,.4);font-style:italic}
+.form-select{
+  width:100%;background:transparent;border:none;border-bottom:1px solid rgba(200,194,186,.15);
+  padding:12px 0;font-size:12px;font-family:var(--sans);color:var(--muted);
+  outline:none;appearance:none;cursor:pointer;letter-spacing:1px;
+}
+.form-select option{background:var(--charcoal)}
+.consult-wpp{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  width:100%;padding:20px;border:1px solid rgba(200,194,186,.15);
+  background:transparent;color:var(--off-white);font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;cursor:pointer;transition:all .4s;font-family:var(--sans);
+  margin-top:56px;
+}
+.consult-wpp:hover{background:rgba(200,194,186,.04);border-color:rgba(200,194,186,.3)}
+.wpp-icon{width:18px;height:18px;fill:var(--muted)}
+
+/* ═══════════════ ADMIN PAGE ═══════════════ */
+.admin-page{background:#0a0908;min-height:100vh}
+.admin-header{padding:40px 48px;border-bottom:1px solid rgba(200,194,186,.08);display:flex;justify-content:space-between;align-items:center}
+.admin-title{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--off-white)}
+.admin-badge{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);border:1px solid rgba(200,194,186,.1);padding:6px 14px}
+.admin-body{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 97px)}
+.admin-sidebar{border-right:1px solid rgba(200,194,186,.06);padding:32px 0}
+.admin-nav-item{
+  display:block;padding:14px 32px;font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;transition:all .3s;background:none;border:none;
+  font-family:var(--sans);width:100%;text-align:left;
+}
+.admin-nav-item:hover,.admin-nav-item.active{color:var(--off-white);background:rgba(200,194,186,.04)}
+.admin-nav-item.active{border-left:1px solid rgba(200,194,186,.2)}
+.admin-content{padding:48px}
+.admin-section{display:none}
+.admin-section.active{display:block}
+.admin-section-title{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid rgba(200,194,186,.06)}
+
+/* Admin Wine List */
+.admin-wine-list{display:flex;flex-direction:column;gap:2px}
+.admin-wine-row{
+  display:grid;grid-template-columns:40px 1fr 120px 120px 100px 80px;
+  gap:16px;align-items:center;padding:20px 24px;background:rgba(200,194,186,.02);
+  border:1px solid transparent;transition:border-color .3s;
+}
+.admin-wine-row:hover{border-color:rgba(200,194,186,.06)}
+.admin-wine-row-num{font-family:var(--serif);font-size:12px;color:rgba(200,194,186,.2)}
+.admin-wine-row-name{font-family:var(--serif);font-size:15px;color:var(--off-white)}
+.admin-wine-row-region{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.admin-wine-row-price{font-family:var(--serif);font-size:14px;color:var(--silver)}
+.admin-wine-row-status{font-size:7px;letter-spacing:2px;text-transform:uppercase}
+.admin-wine-row-status.active{color:var(--wine-light)}
+.admin-wine-row-status.cellar{color:rgba(154,150,144,.5)}
+.admin-wine-row-actions{display:flex;gap:8px}
+.admin-btn-sm{
+  font-size:7px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;
+  border:1px solid rgba(200,194,186,.12);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .3s;font-family:var(--sans);
+}
+.admin-btn-sm:hover{color:var(--off-white);border-color:rgba(200,194,186,.3)}
+.admin-btn-sm.danger:hover{color:#c0392b;border-color:rgba(192,57,43,.3)}
+
+/* Admin Add Form */
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px}
+.admin-field{display:flex;flex-direction:column;gap:10px}
+.admin-field.full{grid-column:1/-1}
+.admin-field label{font-size:7px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.admin-field input,.admin-field textarea,.admin-field select{
+  background:rgba(200,194,186,.03);border:1px solid rgba(200,194,186,.08);
+  padding:12px 16px;color:var(--off-white);font-size:12px;font-family:var(--sans);
+  outline:none;transition:border-color .3s;width:100%;
+}
+.admin-field input:focus,.admin-field textarea:focus{border-color:rgba(200,194,186,.2)}
+.admin-field textarea{min-height:100px;resize:vertical;letter-spacing:.5px;line-height:1.8}
+.admin-field select{cursor:pointer}
+.admin-field select option{background:var(--charcoal)}
+.admin-btn-primary{
+  padding:14px 32px;background:rgba(200,194,186,.08);border:1px solid rgba(200,194,186,.2);
+  color:var(--off-white);font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;font-family:var(--sans);transition:all .3s;
+}
+.admin-btn-primary:hover{background:rgba(200,194,186,.14)}
+.admin-notification{
+  padding:16px 24px;background:rgba(107,39,55,.15);border:1px solid rgba(139,53,69,.2);
+  font-size:10px;letter-spacing:1px;color:var(--wine-light);margin-bottom:32px;
+  display:none;
+}
+.admin-notification.visible{display:block}
+
+/* TOGGLE */
+.toggle-switch{position:relative;display:inline-flex;align-items:center;gap:12px;cursor:pointer}
+.toggle-input{opacity:0;position:absolute}
+.toggle-track{width:36px;height:20px;border-radius:10px;background:rgba(200,194,186,.1);border:1px solid rgba(200,194,186,.15);transition:all .3s;position:relative}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all .3s}
+.toggle-input:checked~.toggle-track{background:rgba(139,53,69,.3);border-color:rgba(139,53,69,.4)}
+.toggle-input:checked~.toggle-track .toggle-thumb{left:18px;background:var(--wine-light)}
+
+/* FEATURED SETTINGS */
+.featured-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.featured-item{
+  padding:24px;background:rgba(200,194,186,.02);border:1px solid rgba(200,194,186,.06);
+  display:flex;flex-direction:column;gap:8px;
+}
+.featured-item-name{font-family:var(--serif);font-size:14px;color:var(--off-white)}
+.featured-item-page{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+
+/* FOOTER */
+footer{
+  padding:80px 60px;background:#050403;border-top:1px solid rgba(200,194,186,.04);
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:60px;
+}
+.footer-logo{font-family:var(--serif);font-size:18px;letter-spacing:4px;color:var(--off-white);margin-bottom:16px}
+.footer-tagline{font-size:9px;letter-spacing:2px;color:rgba(154,150,144,.4);line-height:1.8}
+.footer-col-title{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(154,150,144,.3);margin-bottom:24px}
+.footer-link{display:block;font-size:10px;letter-spacing:1px;color:rgba(154,150,144,.5);margin-bottom:12px;cursor:pointer;transition:color .3s;background:none;border:none;font-family:var(--sans);text-align:left}
+.footer-link:hover{color:var(--muted)}
+.footer-bottom{padding:28px 60px;border-top:1px solid rgba(200,194,186,.04);display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:8px;letter-spacing:2px;color:rgba(154,150,144,.3)}
+
+/* BOTTLE SVG HELPER */
+.bottle-svg-wrap{width:100%;height:100%}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .8s ease forwards}
+.delay-1{animation-delay:.15s}
+.delay-2{animation-delay:.3s}
+.delay-3{animation-delay:.45s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:20px 24px}
+  .nav-links{display:none}
+  .hero-content{padding:0 24px 80px}
+  .section{padding:80px 24px}
+  .wine-grid{grid-template-columns:1fr}
+  .editorial-grid{grid-template-columns:1fr;gap:40px}
+  .collection-grid{grid-template-columns:1fr}
+  .detail-hero{grid-template-columns:1fr;height:auto}
+  .detail-hero-right{padding:40px 24px 60px}
+  .cellar-grid{grid-template-columns:1fr}
+  .about-body{grid-template-columns:1fr;gap:60px}
+  .about-values-grid{grid-template-columns:repeat(2,1fr)}
+  footer{grid-template-columns:1fr}
+  .admin-body{grid-template-columns:1fr}
+  .admin-sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a class="nav-logo" onclick="showPage('home')">TÉRREN</a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" class="active" id="nav-home">Início</a></li>
+    <li><a onclick="showPage('collection')" id="nav-collection">Curadoria</a></li>
+    <li><a onclick="showPage('cellar')" id="nav-cellar">Adega Rara</a></li>
+    <li><a onclick="showPage('about')" id="nav-about">A Maison</a></li>
+    <li><a onclick="showPage('consult')" id="nav-consult">Consultoria</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-cta" onclick="showPage('consult')">Consultar</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-bottle">
+      <svg viewBox="0 0 80 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="0" width="20" height="28" rx="3" fill="#2c2a28"/>
+        <rect x="28" y="28" width="24" height="14" rx="2" fill="#252320"/>
+        <path d="M22 42 Q16 70 16 100 L16 220 Q16 235 40 235 Q64 235 64 220 L64 100 Q64 70 58 42 Z" fill="#1f1d1b"/>
+        <path d="M22 42 Q16 70 16 100 L16 140 Q20 130 40 128 Q60 130 64 140 L64 100 Q64 70 58 42 Z" fill="#242220"/>
+        <rect x="20" y="150" width="40" height="50" rx="1" fill="rgba(107,39,55,0.15)"/>
+        <rect x="22" y="152" width="36" height="46" rx="1" fill="none" stroke="rgba(200,194,186,0.06)" stroke-width="0.5"/>
+        <ellipse cx="40" cy="235" rx="24" ry="5" fill="rgba(0,0,0,0.4)"/>
+        <path d="M28 60 Q40 56 52 60" stroke="rgba(200,194,186,0.08)" stroke-width="0.5" fill="none"/>
+        <path d="M24 80 Q40 75 56 80" stroke="rgba(200,194,186,0.06)" stroke-width="0.5" fill="none"/>
+      </svg>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Curadoria Excepcional</p>
+      <h1 class="hero-title">Silêncio<br>em cada <em>gole.</em></h1>
+      <p class="hero-sub">Vinhos raros, intencionalmente selecionados.<br>Nada mais. Nada menos.</p>
+      <a class="btn-primary" onclick="showPage('collection')">Explorar Curadoria</a>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>Rolar</span>
+    </div>
+  </section>
+
+  <!-- CURATED SELECTION -->
+  <section class="section section-dark">
+    <p class="section-eyebrow">Seleção Atual</p>
+    <h2 class="section-title">Três garrafas.<br>Três universos.</h2>
+    <div class="wine-grid" id="homeWineGrid">
+    </div>
+    <div style="text-align:center;margin-top:60px">
+      <a class="btn-primary" onclick="showPage('collection')">Ver Curadoria Completa</a>
+    </div>
+  </section>
+
+  <!-- EDITORIAL -->
+  <section class="section section-light" style="padding:0">
+    <div class="editorial-grid" style="padding:0">
+      <div class="editorial-visual">
+        <div class="editorial-visual-inner">
+          <svg width="120" height="320" viewBox="0 0 120 320" fill="none">
+            <rect x="45" y="0" width="30" height="40" rx="4" fill="#c8bfb0" opacity=".2"/>
+            <rect x="42" y="40" width="36" height="20" rx="2" fill="#bbb4a8" opacity=".15"/>
+            <path d="M30 60 Q20 100 20 140 L20 295 Q20 315 60 315 Q100 315 100 295 L100 140 Q100 100 90 60 Z" fill="#1a1815" opacity=".8"/>
+            <rect x="28" y="200" width="64" height="72" rx="1" fill="none" stroke="rgba(200,194,186,0.15)" stroke-width="0.8"/>
+            <text x="60" y="242" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="rgba(200,194,186,0.3)" letter-spacing="2">TÉRREN</text>
+          </svg>
+        </div>
+        <div style="position:absolute;bottom:40px;left:40px;font-size:8px;letter-spacing:4px;text-transform:uppercase;color:rgba(200,194,186,.25)">Châteauneuf-du-Pape · 2015</div>
+      </div>
+      <div class="editorial-text" style="padding:80px 60px">
+        <p class="section-eyebrow" style="color:#6b6560">Perspectiva</p>
+        <blockquote class="editorial-quote">
+          "Um vinho não se escolhe.<br>Ele se reconhece."
+        </blockquote>
+        <p style="font-size:11px;letter-spacing:.5px;line-height:2.2;color:#5a5650;max-width:360px">
+          Cada garrafa na Térren passou por um processo rigoroso de reconhecimento. Não de avaliação. O vinho nos fala — nossa função é ouvir.
+        </p>
+        <p class="editorial-attribution" style="color:#8a8680;margin-top:40px">– Filosofia Térren</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RARE CELLAR PREVIEW -->
+  <section class="section" style="background:#050403">
+    <p class="section-eyebrow">Adega Rara</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center">
+      <div>
+        <h2 class="section-title">Para quem<br>entende o tempo.</h2>
+        <p class="section-body" style="margin-bottom:48px">
+          Acesso a vinhos com histórico de décadas. Safras de proveniência verificada. Uma adega dentro da adega — reservada para os que sabem esperar.
+        </p>
+        <a class="btn-primary" onclick="showPage('cellar')">Acessar Adega</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(200,194,186,.04)">
+        <div style="background:#050403;padding:40px 32px;text-align:center">
+          <div style="font-family:var(--serif);font-size:40px;font-weight:300;color:rgba(200,194,186,.3);margin-bottom:8px">47</div>
+          <div style="font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(154,150,144,.3)">Garrafas Disponíveis</div>
+        </div>
+        <div style="background:#050403;padding:40px 32px;text-align:center">
+          <div style="font-family:var(--serif);font-size:40px;font-weight:300;color:rgba(200,194,186,.3);margin-bottom:8px">1962</div>
+          <div style="font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(154,150,144,.3)">Safra Mais Antiga</div>
+        </div>
+        <div style="background:#050403;padding:40px 32px;text-align:center">
+          <div style="font-family:var(--serif);font-size:40px;font-weight:300;color:rgba(200,194,186,.3);margin-bottom:8px">12</div>
+          <div style="font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(154,150,144,.3)">Países de Origem</div>
+        </div>
+        <div style="background:#050403;padding:40px 32px;text-align:center">
+          <div style="font-family:var(--serif);font-size:40px;font-weight:300;color:rgba(200,194,186,.3);margin-bottom:8px">100%</div>
+          <div style="font-size:7px;letter-spacing:3px;text-transform:uppercase;color:rgba(154,150,144,.3)">Proveniência Verificada</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" style="background:var(--charcoal)">
+    <p style="font-size:8px;letter-spacing:5px;text-transform:uppercase;color:rgba(154,150,144,.3);margin-bottom:60px">Manifesto</p>
+    <span class="manifesto-line" id="ml1">Não vendemos vinho.</span>
+    <div class="manifesto-divider"></div>
+    <span class="manifesto-line italic" id="ml2">Curamos silêncio.</span>
+    <div class="manifesto-divider"></div>
+    <span class="manifesto-line" id="ml3">Cada garrafa foi escolhida</span>
+    <span class="manifesto-line italic" id="ml4">com intenção absoluta.</span>
+  </section>
+
+  <!-- CONSULTATION CTA -->
+  <section class="section" style="background:var(--graphite);text-align:center">
+    <p class="section-eyebrow" style="text-align:center">Experiência Personalizada</p>
+    <h2 class="section-title" style="text-align:center;margin:0 auto 32px;max-width:600px">
+      Sua próxima<br>descoberta começa<br><em style="font-family:var(--serif);font-style:italic;color:var(--silver)">aqui.</em>
+    </h2>
+    <p style="font-size:10px;letter-spacing:1px;line-height:2.2;color:var(--muted);margin:0 auto 48px;max-width:400px">
+      Nosso serviço de consultoria é pessoal, preciso e silencioso.<br>Nada de algoritmos. Apenas curadoria humana.
+    </p>
+    <a class="btn-primary" onclick="showPage('consult')">Iniciar Consulta</a>
+  </section>
+
+  <footer>
+    <div>
+      <div class="footer-logo">TÉRREN</div>
+      <p class="footer-tagline">Curadoria de vinhos raros.<br>Intenção em cada seleção.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Navegação</p>
+      <button class="footer-link" onclick="showPage('collection')">Curadoria</button>
+      <button class="footer-link" onclick="showPage('cellar')">Adega Rara</button>
+      <button class="footer-link" onclick="showPage('about')">A Maison</button>
+      <button class="footer-link" onclick="showPage('consult')">Consultoria</button>
+    </div>
+    <div>
+      <p class="footer-col-title">Contato</p>
+      <p class="footer-link" style="cursor:default">terren@maison.com.br</p>
+      <p class="footer-link" style="cursor:default">+55 11 9 0000-0000</p>
+      <p class="footer-link" style="cursor:default">São Paulo, Brasil</p>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 TÉRREN. Todos os direitos reservados.</span>
+    <button class="footer-link" onclick="showPage('admin')" style="font-size:7px;color:rgba(154,150,144,.2)">Admin</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     COLLECTION PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-collection">
+  <div class="page-header">
+    <p class="page-header-eyebrow">Curadoria Térren</p>
+    <h1 class="page-header-title">Seleção</h1>
+    <p class="page-header-sub">Cada garrafa, uma escolha definitiva</p>
+  </div>
+  <div class="collection-grid" id="collectionGrid"></div>
+  <footer style="margin-top:2px">
+    <div><div class="footer-logo">TÉRREN</div><p class="footer-tagline">Curadoria de vinhos raros.</p></div>
+    <div><p class="footer-col-title">Navegação</p><button class="footer-link" onclick="showPage('home')">Início</button><button class="footer-link" onclick="showPage('cellar')">Adega Rara</button></div>
+    <div><p class="footer-col-title">Contato</p><p class="footer-link" style="cursor:default">terren@maison.com.br</p></div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     WINE DETAIL PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="detail-hero">
+    <div class="detail-hero-left">
+      <div class="detail-bottle" id="detailBottle">
+        <svg width="180" height="440" viewBox="0 0 120 320" fill="none">
+          <rect x="42" y="0" width="36" height="44" rx="5" fill="#2c2a28"/>
+          <rect x="39" y="44" width="42" height="18" rx="2" fill="#252320"/>
+          <path d="M28 62 Q18 100 18 140 L18 290 Q18 310 60 310 Q102 310 102 290 L102 140 Q102 100 92 62 Z" fill="#1d1b19"/>
+          <rect x="26" y="190" width="68" height="80" rx="1" fill="none" stroke="rgba(200,194,186,0.12)" stroke-width="0.8"/>
+          <text id="detailBottleLabel" x="60" y="238" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="9" fill="rgba(200,194,186,0.25)" letter-spacing="2">TÉRREN</text>
+          <ellipse cx="60" cy="310" rx="32" ry="6" fill="rgba(0,0,0,0.5)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="detail-hero-right">
+      <button class="detail-back" onclick="goBack()">Voltar à Curadoria</button>
+      <p class="detail-region" id="detailRegion">Borgonha, França</p>
+      <h1 class="detail-name" id="detailName">Carregando...</h1>
+      <p class="detail-vintage" id="detailVintage">—</p>
+      <p class="detail-narrative" id="detailNarrative"></p>
+      <div class="detail-price-row">
+        <span class="detail-price" id="detailPrice">—</span>
+        <span class="detail-avail" id="detailAvail">Disponível</span>
+      </div>
+      <div style="margin-bottom:32px">
+        <button class="btn-primary" onclick="showPage('consult')" style="font-size:8px">Solicitar Consultoria</button>
+      </div>
+      <div class="detail-specs" id="detailSpecs"></div>
+    </div>
+  </div>
+  <div class="detail-lower">
+    <h3 style="font-family:var(--serif);font-size:32px;font-weight:300;margin-bottom:60px;color:var(--off-white)">Ficha Técnica</h3>
+    <div class="detail-lower-grid" id="detailLower"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     RARE CELLAR PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-cellar">
+  <div class="cellar-hero">
+    <div class="cellar-hero-content">
+      <p class="cellar-eyebrow">Acesso Restrito</p>
+      <h1 class="cellar-title">Adega<br>Rara</h1>
+      <p class="cellar-sub">Vinhos de proveniência verificada · Safras históricas · Disponibilidade limitada</p>
+    </div>
+  </div>
+  <div class="cellar-grid" id="cellarGrid"></div>
+  <section style="padding:100px 60px;background:#050403;text-align:center">
+    <p style="font-family:var(--serif);font-size:clamp(28px,3vw,44px);font-weight:300;font-style:italic;color:rgba(240,237,232,.4);margin-bottom:48px">
+      "O tempo é o ingrediente<br>que não se compra."
+    </p>
+    <button class="btn-primary" onclick="showPage('consult')" style="border-color:rgba(200,194,186,.1);color:rgba(200,194,186,.4)">Consultar Disponibilidade</button>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ABOUT PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="about-hero-text">
+      <p style="font-size:8px;letter-spacing:5px;text-transform:uppercase;color:rgba(154,150,144,.3);margin-bottom:40px">A Maison</p>
+      <h1 class="about-statement">
+        Não somos<br>uma loja de <em>vinhos.</em><br>Somos uma <em>intenção.</em>
+      </h1>
+    </div>
+  </div>
+  <div class="about-body">
+    <div>
+      <p class="about-column-title">A Origem</p>
+      <p class="about-text">
+        A Térren nasceu da recusa. A recusa de aceitar que o vinho se tornasse produto. A recusa de ver garrafas extraordinárias perdidas em catálogos genéricos, avaliadas apenas por pontuação e não por alma.
+        <br><br>
+        Fundada por curadores com décadas de experiência em regiões vinícolas da Europa e do Novo Mundo, a Térren existe para um propósito singular: encontrar os vinhos que merecem ser encontrados.
+        <br><br>
+        Cada seleção começa com uma pergunta simples: este vinho é necessário? Se a resposta exigir justificativa, a garrafa não entra na curadoria.
+      </p>
+    </div>
+    <div>
+      <p class="about-column-title">A Filosofia</p>
+      <p class="about-text">
+        O luxo que nos interessa não é ostentação. É precisão. É a sensação de segurar uma garrafa e saber, sem que ninguém precise explicar, que algo raro está entre seus dedos.
+        <br><br>
+        Na Térren, menos é sempre mais. Nossa curadoria é pequena por princípio. Cada adição significa que uma garrafa foi suficientemente extraordinária para substituir algo que já era excepcional.
+        <br><br>
+        Trabalhamos em silêncio. Sem campanhas. Sem ruído. A qualidade não precisa gritar.
+      </p>
+    </div>
+  </div>
+  <div class="about-values">
+    <p style="font-size:8px;letter-spacing:5px;text-transform:uppercase;color:rgba(154,150,144,.3)">Princípios</p>
+    <div class="about-values-grid">
+      <div class="about-value"><div class="about-value-word">Precisão</div><div class="about-value-desc">Cada escolha é deliberada.<br>Nada entra por acaso.</div></div>
+      <div class="about-value"><div class="about-value-word">Raridade</div><div class="about-value-desc">Limitado por natureza.<br>Valioso por essência.</div></div>
+      <div class="about-value"><div class="about-value-word">Silêncio</div><div class="about-value-desc">O luxo não precisa<br>se anunciar.</div></div>
+      <div class="about-value"><div class="about-value-word">Cultura</div><div class="about-value-desc">Vinho como expressão<br>de tempo e lugar.</div></div>
+    </div>
+  </div>
+  <footer>
+    <div><div class="footer-logo">TÉRREN</div><p class="footer-tagline">Curadoria de vinhos raros.</p></div>
+    <div><p class="footer-col-title">Navegação</p><button class="footer-link" onclick="showPage('home')">Início</button><button class="footer-link" onclick="showPage('collection')">Curadoria</button></div>
+    <div><p class="footer-col-title">Contato</p><p class="footer-link" style="cursor:default">terren@maison.com.br</p></div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     CONSULTATION PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page" id="page-consult">
+  <div class="consult-hero">
+    <div>
+      <p style="font-size:8px;letter-spacing:5px;text-transform:uppercase;color:rgba(154,150,144,.3);margin-bottom:32px">Consultoria Privada</p>
+      <h1 style="font-family:var(--serif);font-size:clamp(44px,5vw,72px);font-weight:300;color:var(--off-white);line-height:1.1">
+        Uma conversa.<br>Uma <em style="font-style:italic;color:var(--silver)">descoberta.</em>
+      </h1>
+    </div>
+  </div>
+  <div class="consult-form-section">
+    <p class="consult-intro">
+      Não temos formulário de pedido.<br>Temos uma conversa.<br><br>
+      Conte-nos o que você busca e nosso curador<br>responde em até 24 horas.
+    </p>
+    <div class="form-group">
+      <label class="form-label">Seu Nome</label>
+      <input class="form-input" type="text" placeholder="Como prefere ser chamado">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contato</label>
+      <input class="form-input" type="text" placeholder="E-mail ou WhatsApp">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ocasião</label>
+      <select class="form-select">
+        <option value="">Selecionar</option>
+        <option>Presente especial</option>
+        <option>Jantar privado</option>
+        <option>Adega pessoal</option>
+        <option>Investimento</option>
+        <option>Descoberta pessoal</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sua busca</label>
+      <input class="form-input" type="text" placeholder="O que você está procurando?">
+    </div>
+    <button class="btn-primary" style="width:100%;text-align:center;padding:20px;margin-top:16px">Enviar Consulta</button>
+    <button class="consult-wpp">
+      <svg class="wpp-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Consultar via WhatsApp
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADMIN / CMS PAGE
+══════════════════════════════════════════════════════ -->
+<div class="page admin-page" id="page-admin">
+  <div class="admin-header">
+    <h1 class="admin-title">TÉRREN — Painel</h1>
+    <div style="display:flex;gap:16px;align-items:center">
+      <span class="admin-badge">CMS</span>
+      <button class="admin-btn-sm" onclick="showPage('home')">← Voltar ao Site</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <nav class="admin-sidebar">
+      <button class="admin-nav-item active" onclick="adminSection('wines')">Vinhos</button>
+      <button class="admin-nav-item" onclick="adminSection('add')">Adicionar Vinho</button>
+      <button class="admin-nav-item" onclick="adminSection('featured')">Destaques</button>
+      <button class="admin-nav-item" onclick="adminSection('cellar-admin')">Adega Rara</button>
+      <button class="admin-nav-item" onclick="adminSection('homepage')">Homepage</button>
+    </nav>
+    <div class="admin-content">
+
+      <!-- WINES LIST -->
+      <div class="admin-section active" id="admin-wines">
+        <p class="admin-section-title">Gerenciar Vinhos</p>
+        <div class="admin-wine-list" id="adminWineList"></div>
+      </div>
+
+      <!-- ADD WINE -->
+      <div class="admin-section" id="admin-add">
+        <p class="admin-section-title">Adicionar Novo Vinho</p>
+        <div class="admin-notification" id="addNotification">Vinho adicionado com sucesso à curadoria.</div>
+        <div class="admin-form-grid">
+          <div class="admin-field"><label>Nome do Vinho</label><input id="newName" type="text" placeholder="Ex: Château Margaux"></div>
+          <div class="admin-field"><label>Safra (Vintage)</label><input id="newVintage" type="text" placeholder="Ex: 2016"></div>
+          <div class="admin-field"><label>Região</label><input id="newRegion" type="text" placeholder="Ex: Bordeaux, França"></div>
+          <div class="admin-field"><label>Uva</label><input id="newGrape" type="text" placeholder="Ex: Cabernet Sauvignon"></div>
+          <div class="admin-field"><label>Preço (R$)</label><input id="newPrice" type="text" placeholder="Ex: 1.200"></div>
+          <div class="admin-field"><label>Tipo</label>
+            <select id="newType">
+              <option value="collection">Curadoria</option>
+              <option value="cellar">Adega Rara</option>
+            </select>
+          </div>
+          <div class="admin-field"><label>Envelhecimento</label><input id="newAging" type="text" placeholder="Ex: 18 meses em carvalho francês"></div>
+          <div class="admin-field"><label>Corpo</label>
+            <select id="newBody">
+              <option>Encorpado</option>
+              <option>Médio</option>
+              <option>Leve</option>
+            </select>
+          </div>
+          <div class="admin-field full"><label>Narrativa</label><textarea id="newNarrative" placeholder="Descrição poética/editorial do vinho..."></textarea></div>
+        </div>
+        <button class="admin-btn-primary" onclick="addWine()">Adicionar à Curadoria</button>
+      </div>
+
+      <!-- FEATURED -->
+      <div class="admin-section" id="admin-featured">
+        <p class="admin-section-title">Destaques da Homepage</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:32px;letter-spacing:.5px;line-height:1.8">Selecione quais vinhos aparecem em destaque na homepage (máximo 3).</p>
+        <div class="featured-grid" id="featuredGrid"></div>
+      </div>
+
+      <!-- CELLAR ADMIN -->
+      <div class="admin-section" id="admin-cellar-admin">
+        <p class="admin-section-title">Adega Rara</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:32px;letter-spacing:.5px;line-height:1.8">Gerencie os vinhos marcados como "Adega Rara".</p>
+        <div class="admin-wine-list" id="adminCellarList"></div>
+      </div>
+
+      <!-- HOMEPAGE -->
+      <div class="admin-section" id="admin-homepage">
+        <p class="admin-section-title">Configurações da Homepage</p>
+        <div style="display:flex;flex-direction:column;gap:32px">
+          <div class="admin-field"><label>Título do Hero</label><input type="text" value="Silêncio em cada gole."></div>
+          <div class="admin-field"><label>Subtítulo</label><input type="text" value="Vinhos raros, intencionalmente selecionados."></div>
+          <div class="admin-field"><label>Linha do Manifesto 1</label><input type="text" value="Não vendemos vinho."></div>
+          <div class="admin-field"><label>Linha do Manifesto 2</label><input type="text" value="Curamos silêncio."></div>
+          <button class="admin-btn-primary" onclick="alert('Configurações salvas.')">Salvar Alterações</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ DATA STORE ═══════════
+let wines = [
+  {id:1,name:"Pétrus",vintage:"2014",region:"Pomerol, França",grape:"Merlot",price:"R$ 18.500",aging:"18 meses em carvalho novo",body:"Encorpado",serving:"18°C",narrative:"Há vinhos que representam uma região. E há o Pétrus, que representa uma ideia — a ideia de que um único hectare, tratado com obsessão absoluta, pode produzir algo que desafia o conceito de excelência. Este 2014 é silencioso como uma câmara de eco.",type:"collection",featured:true,units:"3"},
+  {id:2,name:"Sassicaia",vintage:"2017",region:"Bolgheri, Itália",grape:"Cabernet Sauvignon",price:"R$ 3.200",aging:"24 meses em barricas",body:"Encorpado",serving:"17°C",narrative:"O vinho que convenceu a Itália de que a Toscana poderia competir com Bordeaux. Uma declaração em forma de líquido. Estruturado, tenso, com décadas à frente.",type:"collection",featured:true,units:"8"},
+  {id:3,name:"Leeuwin Estate Art Series",vintage:"2018",region:"Margaret River, Austrália",grape:"Chardonnay",price:"R$ 1.800",aging:"12 meses em carvalho francês",body:"Médio",serving:"12°C",narrative:"O Novo Mundo com a elegância do Velho. Uma Chardonnay que não grita — ela sussurra. E é exatamente isso que a torna inesquecível.",type:"collection",featured:true,units:"12"},
+  {id:4,name:"DRC Romanée-Conti",vintage:"1999",region:"Borgonha, França",grape:"Pinot Noir",price:"R$ 120.000",aging:"16 meses em carvalho novo",body:"Médio",serving:"16°C",narrative:"O vinho que não precisa de apresentação. Uma garrafa é um evento. Um encontro com o absoluto. Disponível por consulta exclusiva.",type:"cellar",featured:false,units:"1"},
+  {id:5,name:"Vega Sicilia Único",vintage:"2009",region:"Ribera del Duero, Espanha",grape:"Tempranillo",price:"R$ 8.900",aging:"20 meses em carvalho",body:"Encorpado",serving:"18°C",narrative:"A Espanha em seu estado mais preciso. A Vega Sicilia não lança um vinho até que ele esteja pronto para o mundo — e o mundo nunca está pronto para a Vega Sicilia.",type:"cellar",featured:false,units:"4"},
+  {id:6,name:"Grange Hermitage",vintage:"1986",region:"Barossa Valley, Austrália",grape:"Shiraz",price:"R$ 22.000",aging:"18 meses em carvalho americano",body:"Encorpado",serving:"18°C",narrative:"Uma lenda de 38 anos. A Penfolds criou não apenas um vinho — criou uma categoria. Este 1986 é história em forma de garrafa, com décadas de evolução ainda pela frente.",type:"cellar",featured:false,units:"2"},
+];
+let nextId = 7;
+let currentPage = 'home';
+let prevPage = 'collection';
+
+// ═══════════ NAVIGATION ═══════════
+function showPage(name){
+  if(name!=='detail') prevPage=currentPage;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const navEl=document.getElementById('nav-'+name);
+  if(navEl) navEl.classList.add('active');
+  currentPage=name;
+  window.scrollTo(0,0);
+  if(name==='collection') renderCollection();
+  if(name==='cellar') renderCellar();
+  if(name==='admin') renderAdmin();
+  if(name==='home') renderHomeGrid();
+}
+
+function goBack(){showPage(prevPage==='detail'?'collection':prevPage)}
+
+// ═══════════ BOTTLE SVG ═══════════
+function bottleSVG(w,h,color='#1d1b19'){
+  return `<svg width="${w}" height="${h}" viewBox="0 0 80 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="28" y="0" width="24" height="28" rx="3" fill="#2c2a28"/>
+    <rect x="26" y="28" width="28" height="12" rx="2" fill="#252320"/>
+    <path d="M16 40 Q10 70 10 100 L10 180 Q10 196 40 196 Q70 196 70 180 L70 100 Q70 70 64 40 Z" fill="${color}"/>
+    <rect x="14" y="118" width="52" height="44" rx="1" fill="none" stroke="rgba(200,194,186,0.1)" stroke-width="0.6"/>
+    <ellipse cx="40" cy="196" rx="22" ry="4" fill="rgba(0,0,0,0.35)"/>
+  </svg>`;
+}
+
+// ═══════════ HOME GRID ═══════════
+function renderHomeGrid(){
+  const grid=document.getElementById('homeWineGrid');
+  if(!grid) return;
+  const featured=wines.filter(w=>w.featured).slice(0,3);
+  grid.innerHTML=featured.map(w=>`
+    <div class="wine-card" onclick="showDetail(${w.id})">
+      <div class="wine-card-img">${bottleSVG(60,140)}</div>
+      <p class="wine-card-region">${w.region}</p>
+      <h3 class="wine-card-name">${w.name}</h3>
+      <p class="wine-card-vintage">${w.vintage}</p>
+      <p class="wine-card-price">${w.price}</p>
+      <p class="wine-card-arrow">Ver detalhe →</p>
+    </div>
+  `).join('');
+}
+
+// ═══════════ COLLECTION ═══════════
+function renderCollection(){
+  const grid=document.getElementById('collectionGrid');
+  const coll=wines.filter(w=>w.type==='collection');
+  const nums=['I','II','III','IV','V','VI','VII','VIII'];
+  grid.innerHTML=coll.map((w,i)=>`
+    <div class="collection-item" onclick="showDetail(${w.id})">
+      <div class="collection-item-top">
+        <span class="collection-item-num">${nums[i]||String(i+1).padStart(2,'0')}</span>
+        ${w.featured?'<span class="collection-item-badge">Destaque</span>':''}
+      </div>
+      <div class="collection-item-bottle">${bottleSVG(70,170)}</div>
+      <div class="collection-item-info">
+        <p class="collection-item-region">${w.region}</p>
+        <h2 class="collection-item-name">${w.name}</h2>
+        <p class="collection-item-vintage">${w.vintage}</p>
+        <div class="collection-item-footer">
+          <span class="collection-item-price">${w.price}</span>
+          <span class="collection-item-cta">Ver detalhes →</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════ CELLAR ═══════════
+function renderCellar(){
+  const grid=document.getElementById('cellarGrid');
+  const cellar=wines.filter(w=>w.type==='cellar');
+  grid.innerHTML=cellar.map((w,i)=>`
+    <div class="cellar-item" onclick="showDetail(${w.id})">
+      <p class="cellar-item-id">TR–${String(w.id).padStart(3,'0')}</p>
+      <div class="cellar-item-bottle">${bottleSVG(50,120,'#171513')}</div>
+      <h3 class="cellar-item-name">${w.name}</h3>
+      <p class="cellar-item-year">${w.vintage}</p>
+      <p class="cellar-item-price">${w.price}</p>
+      <p class="cellar-item-units">${w.units} ${w.units==='1'?'garrafa':'garrafas'} disponíveis</p>
+    </div>
+  `).join('');
+}
+
+// ═══════════ DETAIL ═══════════
+function showDetail(id){
+  const w=wines.find(x=>x.id===id);
+  if(!w) return;
+  document.getElementById('detailRegion').textContent=w.region;
+  document.getElementById('detailName').textContent=w.name;
+  document.getElementById('detailVintage').textContent=w.vintage;
+  document.getElementById('detailNarrative').textContent=w.narrative;
+  document.getElementById('detailPrice').textContent=w.price;
+  document.getElementById('detailAvail').textContent=`${w.units} disponíveis`;
+  document.getElementById('detailBottleLabel').textContent=w.name.toUpperCase().slice(0,8);
+  document.getElementById('detailSpecs').innerHTML=`
+    <div><p class="detail-spec-label">Safra</p><p class="detail-spec-value">${w.vintage}</p></div>
+    <div><p class="detail-spec-label">Uva</p><p class="detail-spec-value">${w.grape}</p></div>
+    <div><p class="detail-spec-label">Corpo</p><p class="detail-spec-value">${w.body}</p></div>
+  `;
+  document.getElementById('detailLower').innerHTML=`
+    <div>
+      <p class="spec-block-title">Técnica</p>
+      <div class="spec-row"><span class="spec-row-label">Envelhecimento</span><span class="spec-row-val">${w.aging}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Temperatura</span><span class="spec-row-val">${w.serving}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Corpo</span><span class="spec-row-val">${w.body}</span></div>
+    </div>
+    <div>
+      <p class="spec-block-title">Origem</p>
+      <div class="spec-row"><span class="spec-row-label">Região</span><span class="spec-row-val">${w.region}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Uva Principal</span><span class="spec-row-val">${w.grape}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Safra</span><span class="spec-row-val">${w.vintage}</span></div>
+    </div>
+    <div>
+      <p class="spec-block-title">Disponibilidade</p>
+      <div class="spec-row"><span class="spec-row-label">Unidades</span><span class="spec-row-val">${w.units}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Tipo</span><span class="spec-row-val">${w.type==='cellar'?'Adega Rara':'Curadoria'}</span></div>
+      <div class="spec-row"><span class="spec-row-label">Preço</span><span class="spec-row-val">${w.price}</span></div>
+    </div>
+  `;
+  showPage('detail');
+}
+
+// ═══════════ ADMIN ═══════════
+function renderAdmin(){
+  renderAdminList();
+  renderFeatured();
+  renderAdminCellar();
+}
+
+function renderAdminList(){
+  const el=document.getElementById('adminWineList');
+  el.innerHTML=`<div class="admin-wine-row" style="opacity:.4">
+    <span></span><span style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)">Nome</span>
+    <span style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Região</span>
+    <span style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Preço</span>
+    <span style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Status</span>
+    <span></span>
+  </div>`+wines.map((w,i)=>`
+    <div class="admin-wine-row">
+      <span class="admin-wine-row-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="admin-wine-row-name">${w.name} <span style="font-size:10px;color:var(--muted)">${w.vintage}</span></span>
+      <span class="admin-wine-row-region">${w.region.split(',')[0]}</span>
+      <span class="admin-wine-row-price">${w.price}</span>
+      <span class="admin-wine-row-status ${w.type==='cellar'?'cellar':'active'}">${w.type==='cellar'?'Adega':'Curadoria'}</span>
+      <div class="admin-wine-row-actions">
+        <button class="admin-btn-sm" onclick="toggleFeatured(${w.id})">${w.featured?'★':'☆'}</button>
+        <button class="admin-btn-sm danger" onclick="deleteWine(${w.id})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAdminCellar(){
+  const el=document.getElementById('adminCellarList');
+  const cellar=wines.filter(w=>w.type==='cellar');
+  el.innerHTML=cellar.map((w,i)=>`
+    <div class="admin-wine-row">
+      <span class="admin-wine-row-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="admin-wine-row-name">${w.name} <span style="font-size:10px;color:var(--muted)">${w.vintage}</span></span>
+      <span class="admin-wine-row-region">${w.region.split(',')[0]}</span>
+      <span class="admin-wine-row-price">${w.price}</span>
+      <span class="admin-wine-row-status cellar">${w.units} un.</span>
+      <div class="admin-wine-row-actions">
+        <button class="admin-btn-sm danger" onclick="deleteWine(${w.id})">×</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFeatured(){
+  const el=document.getElementById('featuredGrid');
+  el.innerHTML=wines.map(w=>`
+    <div class="featured-item">
+      <p class="featured-item-name">${w.name}</p>
+      <p class="featured-item-page">${w.type==='cellar'?'Adega Rara':'Curadoria'} · ${w.vintage}</p>
+      <label class="toggle-switch" style="margin-top:12px">
+        <input class="toggle-input" type="checkbox" ${w.featured?'checked':''} onchange="toggleFeaturedById(${w.id},this.checked)">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span style="font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">${w.featured?'Destaque':'—'}</span>
+      </label>
+    </div>
+  `).join('');
+}
+
+function toggleFeatured(id){
+  const w=wines.find(x=>x.id===id);
+  if(w) w.featured=!w.featured;
+  renderAdminList();
+  renderFeatured();
+}
+function toggleFeaturedById(id,val){
+  const w=wines.find(x=>x.id===id);
+  if(w) w.featured=val;
+}
+function deleteWine(id){
+  if(!confirm('Remover este vinho da curadoria?')) return;
+  wines=wines.filter(x=>x.id!==id);
+  renderAdminList();
+  renderAdminCellar();
+  renderFeatured();
+}
+function addWine(){
+  const n=document.getElementById('newName').value.trim();
+  if(!n){alert('Insira o nome do vinho.');return;}
+  wines.push({
+    id:nextId++,
+    name:n,
+    vintage:document.getElementById('newVintage').value||'—',
+    region:document.getElementById('newRegion').value||'—',
+    grape:document.getElementById('newGrape').value||'—',
+    price:'R$ '+document.getElementById('newPrice').value||'—',
+    aging:document.getElementById('newAging').value||'—',
+    body:document.getElementById('newBody').value,
+    serving:'16°C',
+    narrative:document.getElementById('newNarrative').value||'Uma seleção rigorosa da Térren.',
+    type:document.getElementById('newType').value,
+    featured:false,
+    units:'5'
+  });
+  const notif=document.getElementById('addNotification');
+  notif.classList.add('visible');
+  setTimeout(()=>notif.classList.remove('visible'),3000);
+  document.querySelectorAll('#admin-add input,#admin-add textarea').forEach(el=>el.value='');
+  renderAdminList();
+}
+
+function adminSection(name){
+  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('admin-'+name).classList.add('active');
+  document.querySelectorAll('.admin-nav-item').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ═══════════ SCROLL EFFECTS ═══════════
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('mainNav');
+  if(window.scrollY>50) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+  // manifesto lines
+  ['ml1','ml2','ml3','ml4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    const rect=el.getBoundingClientRect();
+    if(rect.top < window.innerHeight*0.88) el.classList.add('visible');
+  });
+});
+
+// INIT
+renderHomeGrid();
+</script>
+</body>
+</html>
